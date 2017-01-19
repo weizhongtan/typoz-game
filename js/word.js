@@ -1,9 +1,8 @@
 var Word = (function(Word) {
-	function Word(word, velocity, arr) {
+	function Word(word, arr) {
 		this.word = word;
 		this.currentString = word;
 		this.activeLetter = word[0];
-		this.speed = velocity;
 		this.x = 0;
 		this.y = 0;
 		this.container = arr;
@@ -30,17 +29,21 @@ var Word = (function(Word) {
 		var div = d.createElement("div");
 		div.setAttribute("id", this.word);
 		div.setAttribute("class", "game-word");
-		var text = d.createTextNode(this.word);
-		div.appendChild(text);
+		div.appendChild(d.createTextNode(this.word));
 		$("." + classToAddTo).append(div);
 	}
 
+	Word.prototype.calculateVel = function() {
+		return (this.word.length - this.currentString.length) + 1;
+	}
+
 	Word.prototype.animate = function() {
-		this.x += this.speed;
+		this.x += this.calculateVel();
 		if (this.x > d.documentElement.clientHeight) {
 			this.x = 0;
 		}
 		this.getFromDom().css("top", this.x + "px");
+		this.getFromDom().css("font-size", this.scale + "em");
 	}
 
 	return Word;

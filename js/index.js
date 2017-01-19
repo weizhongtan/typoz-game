@@ -10,21 +10,25 @@ var Game = {
 		this.T = 0;
 	},
 	main: function() {
+		// animate each word in the words in the game currently
 		this.wordsInGame.forEach(function(w) {
 			w.animate();
 		});
 		// increment counter
 		this.T++;
-		// generate new word every 2 seconds
-		if (this.T % 120 == 0) {
+		// generate new word every 4 seconds
+		if (this.T % 20 == 0) {
+			console.log(Game.wordsInGame);
+		}
+		if (this.T % 240 == 0) {
 			this.getRandomWord();
 		}
 		setTimeout(function() {
 			Game.main();
 		}, 1000/30);
 	},
-	addNewWord: function(word, velocity) {
-		var newWord = new Word(word, velocity, this.wordsInGame);
+	addNewWord: function(word) {
+		var newWord = new Word(word, this.wordsInGame);
 		newWord.addToPage("game-container");
 	},
 	getRandomWord: function() {
@@ -38,7 +42,7 @@ var Game = {
 		});
 	},
 	randomWordReceived: function(data) {
-		Game.addNewWord(data.Word.toLowerCase(), 2);
+		Game.addNewWord(data.Word.toLowerCase());
 	}
 };
 
@@ -46,7 +50,7 @@ var Game = {
 Game.init();
 
 // add a word to the words array
-Game.addNewWord("hello", 2);
+Game.addNewWord("hello");
 
 // start the game
 Game.main();

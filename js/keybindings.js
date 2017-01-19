@@ -6,6 +6,7 @@
     (function() {
       var currKey = alphabet[i];
       Mousetrap.bind(currKey, function(e) {
+        var words = [];
         Game.wordsInGame.forEach(function(w) {
           if (w.activeLetter == currKey) {
             w.removeFirstLetter();
