@@ -35,13 +35,11 @@ var Word = (function(Word) {
 		$("." + classToAddTo).append(div);
 	}
 
-	Word.prototype.checkRemoveCondition = function() {
-
-	}
-
 	Word.prototype.animate = function() {
 		this.x += this.speed;
-		if (this.x > d.documentElement.clientHeight) this.removeWordFrom(this.container);
+		if (this.x > d.documentElement.clientHeight) {
+			this.x = 0;
+		}
 		this.getFromDom().css("top", this.x + "px");
 	}
 
