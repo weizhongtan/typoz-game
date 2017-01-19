@@ -17,10 +17,7 @@ var Game = {
 		// increment counter
 		this.T++;
 		// generate new word every 4 seconds
-		if (this.T % 20 == 0) {
-			console.log(Game.wordsInGame);
-		}
-		if (this.T % 240 == 0) {
+		if (this.T % 120 == 0) {
 			this.getRandomWord();
 		}
 		setTimeout(function() {

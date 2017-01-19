@@ -3,8 +3,10 @@ var Word = (function(Word) {
 		this.word = word;
 		this.currentString = word;
 		this.activeLetter = word[0];
+		this.scale = ((25 - word.length) > 12) ? (25 - word.length) : 12;
+		this.active = false;
 		this.x = 0;
-		this.y = 0;
+		this.y = Math.random() * 500;
 		this.container = arr;
 		arr.push(this);
 	}
@@ -38,12 +40,18 @@ var Word = (function(Word) {
 	}
 
 	Word.prototype.animate = function() {
-		this.x += this.calculateVel();
+		var w = this.getFromDom();
+		this.x += 1;
 		if (this.x > d.documentElement.clientHeight) {
 			this.x = 0;
 		}
-		this.getFromDom().css("top", this.x + "px");
-		this.getFromDom().css("font-size", this.scale + "em");
+		w.css("top", this.x + "px");
+		w.css("left", this.y + "px");
+		w.css("font-size", this.scale + "px");
+
+		if (this.active) {
+			w.addClass("first");
+		}
 	}
 
 	return Word;
