@@ -14,7 +14,6 @@
 .game-word {
 	position: absolute;
 	left: 50%;
-
 }
 
 .first::first-letter {

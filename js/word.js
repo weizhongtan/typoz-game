@@ -1,12 +1,17 @@
 var Word = (function(Word) {
 	function Word(word, arr) {
+		var rand = Math.random() * 100;
 		this.word = word;
 		this.currentString = word;
 		this.activeLetter = word[0];
 		this.scale = ((25 - word.length) > 12) ? (25 - word.length) : 12;
 		this.active = false;
 		this.x = 0;
-		this.y = Math.random() * 500;
+		if (rand + (this.word.length * 2) > 100) {
+			this.y = rand - this.word.length;
+		} else {
+			this.y = rand;
+		}
 		this.container = arr;
 		arr.push(this);
 	}
@@ -46,7 +51,7 @@ var Word = (function(Word) {
 			this.x = 0;
 		}
 		w.css("top", this.x + "px");
-		w.css("left", this.y + "px");
+		w.css("left", this.y + "%");
 		w.css("font-size", this.scale + "px");
 
 		if (this.active) {
