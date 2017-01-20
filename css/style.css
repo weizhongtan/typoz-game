@@ -19,6 +19,6 @@
 	left: 50%;
 }
 
-.first::first-letter {
-	color: rgb(124, 213, 24);
+.typed {
+	color: #b8cdb9;
 }

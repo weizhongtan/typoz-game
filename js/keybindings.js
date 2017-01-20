@@ -16,7 +16,7 @@
             isWordActive = true;
             activeWord = w;
             if (currKey == activeWord.activeLetter) {
-              activeWord.removeFirstLetter();
+              activeWord.changeActiveLetter();
             }
           }
         });
@@ -43,8 +43,8 @@
               activeWord = matchedWords.reduce((a, b) => (b.x > a.x) ? b : a);
             }
             activeWord.active = true;
-            activeWord.removeFirstLetter();
-            console.log("active word: " + activeWord.currentString);
+            activeWord.changeActiveLetter();
+            console.log("active word: " + activeWord.remainingStr);
           }
         }
       });
