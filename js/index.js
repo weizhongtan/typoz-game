@@ -21,18 +21,25 @@ var Game = {
 		this.T = 0;
 	},
 	main: function() {
+		// initialize Game variables
+		this.init();
+
+		// begin the animation loop
+		this.renderFrame();
+	},
+	renderFrame: function () {
 		// animate each word in the words in the game currently
 		this.wordsInGame.forEach(function(w) {
 			w.animate();
 		});
 		// increment counter
 		this.T++;
-		// generate new word every 4 seconds
-		if (this.T % 120 == 0) {
+		// generate new word every 2 seconds
+		if (this.T % 120 == 60) {
 			this.getRandomWord();
 		}
 		setTimeout(function() {
-			Game.main();
+			Game.renderFrame();
 		}, 1000/30);
 	},
 	addNewWord: function(word) {
@@ -52,11 +59,11 @@ var Game = {
 	}
 };
 
-// array holding all the words in the game
-Game.init();
-
-// add a word to the words array
-Game.addNewWord("hello");
-
 // start the game
 Game.main();
+
+Game.addNewWord("hello");
+
+setTimeout(function() {
+	Game.addNewWord("hear")
+}, 500);

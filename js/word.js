@@ -1,26 +1,32 @@
 var Word = (function(Word) {
 	function Word(word, arr) {
-		var rand = Math.random() * 100;
 		this.word = word;
 		// the part of the word that has already been typed
 		this.typedStr = "";
-		// this is changed every time a correct letter is typed
+		// the remaining string that needs to be typed
 		this.remainingStr = word;
+		// the current letter that needs to be typed
 		this.activeLetter = word[0];
-		this.scale = Math.max(20, 2 * this.word.length);
+		//
 		this.active = false;
-		this.x = 0;
+		// the size of the word in the dom
+		this.scale = Math.max(20, 2 * this.word.length);
+		// vertical distance from the top
+		this.y = 0;
+		// randomized horizontal distance from the left
+		var rand = Math.random() * 100;
 		if (rand + (this.word.length * 2) > 100) {
-			this.y = rand - this.word.length;
+			this.x = rand - this.word.length;
 		} else {
-			this.y = rand;
+			this.x = rand;
 		}
+		// the array that this word lives in
 		this.container = arr;
 		arr.push(this);
 	}
 
 	Word.prototype.getFromDom = function() {
-		// returns the this word dom element
+		// returns this dom element
 		return $("#" + this.word);
 	}
 
@@ -44,7 +50,6 @@ var Word = (function(Word) {
 		var w = this.getFromDom();
 		w.addClass('animated zoomOutUp');
 		w.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
-			console.log("removing");
 			w.remove();
 		});
 		// immediately remove it from the words array so the next word can be typed
@@ -52,30 +57,30 @@ var Word = (function(Word) {
 	}
 
 	Word.prototype.addToPage = function(classToAddTo) {
+		// creates a new div element, and adds it to given class dom element
 		var div = d.createElement("div");
 		div.setAttribute("id", this.word);
 		div.setAttribute("class", "game-word");
 		div.appendChild(d.createTextNode(this.word));
 		$("." + classToAddTo).append(div);
-		this.getFromDom().textillate({
-			in: {
-				effect: 'bounceInDown'
-			}
-		});
+		this.getFromDom().textillate({ in: { effect: 'bounceInDown'	}	});
 	}
 
 	Word.prototype.calculateVel = function() {
+		// returns the downwards velocity of the word
 		return (this.word.length - this.remainingStr.length) + 1;
 	}
 
 	Word.prototype.animate = function() {
-		var w = this.getFromDom();
-		this.x += 1;
-		if (this.x > d.documentElement.clientHeight) {
-			this.x = 0;
+		// increments internal position properties
+		this.y += 1;
+		if (this.y > d.documentElement.clientHeight) {
+			this.y = 0;
 		}
-		w.css("top", this.x + "px");
-		w.css("left", this.y + "%");
+		// translates these to changes in the dom
+		var w = this.getFromDom();
+		w.css("top", this.y + "px");
+		w.css("left", this.x + "%");
 		w.css("font-size", this.scale + "px");
 	}
 
