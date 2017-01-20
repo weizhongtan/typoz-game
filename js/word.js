@@ -4,7 +4,7 @@ var Word = (function(Word) {
 		this.word = word;
 		this.currentString = word;
 		this.activeLetter = word[0];
-		this.scale = ((25 - word.length) > 12) ? (25 - word.length) : 12;
+		this.scale = Math.max(20, 2 * this.word.length);
 		this.active = false;
 		this.x = 0;
 		if (rand + (this.word.length * 2) > 100) {
@@ -17,13 +17,15 @@ var Word = (function(Word) {
 	}
 
 	Word.prototype.getFromDom = function() {
+		// returns the this word dom element
 		return $("#" + this.word);
 	}
 
 	Word.prototype.removeFirstLetter = function() {
+		//
 		this.currentString = this.currentString.slice(1);
+		this.getFromDom().html("<span class='exploding'>" + this.activeLetter + "</span>" + this.currentString);
 		this.activeLetter = this.currentString[0];
-		this.getFromDom().text(this.currentString);
 		if (this.currentString.length == 0) this.removeWordFrom(this.container);
 	}
 
@@ -38,6 +40,11 @@ var Word = (function(Word) {
 		div.setAttribute("class", "game-word");
 		div.appendChild(d.createTextNode(this.word));
 		$("." + classToAddTo).append(div);
+		this.getFromDom().textillate({
+			in: {
+				effect: 'rollIn'
+			}
+		});
 	}
 
 	Word.prototype.calculateVel = function() {

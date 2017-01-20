@@ -3,10 +3,12 @@ var d = document;
 var Game = {
 	currentLevel: null,
 	wordsInGame: null,
+	score: null,
 	T: null,
 	init: function() {
 		this.currentLevel = 0;
 		this.wordsInGame = [];
+		this.score = 0;
 		this.T = 0;
 	},
 	main: function() {
@@ -29,11 +31,9 @@ var Game = {
 		newWord.addToPage("game-container");
 	},
 	getRandomWord: function() {
-		var requestStr = "http://randomword.setgetgo.com/get.php";
-
 		$.ajax({
 			type: "GET",
-			url: requestStr,
+			url: "http://randomword.setgetgo.com/get.php",
 			dataType: "jsonp",
 			jsonpCallback: 'Game.randomWordReceived'
 		});
