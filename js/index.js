@@ -1,3 +1,12 @@
+/* TO DO LIST
+
+* add sound effects and music
+* fix bug of words going off the sides
+* make movement more dynamic
+* implement score system
+* online multiplayer / leaderboards
+
+*/
 var d = document;
 
 var Game = {
