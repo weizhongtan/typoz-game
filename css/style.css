@@ -19,6 +19,18 @@
 	left: 50%;
 }
 
+.score-container {
+	position: absolute;
+	margin: 10px;
+	bottom: 0;
+	left: 0;
+	color: #b8cdb9;
+}
+
+.score-container p {
+	margin: 0;
+}
+
 .typed {
 	color: #b8cdb9;
 }

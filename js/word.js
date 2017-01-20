@@ -1,3 +1,6 @@
+"use strict";
+const DEFAULT_Y_VEL = 1;
+
 var Word = (function(Word) {
 	function Word(word, arr) {
 		this.word = word;
@@ -7,7 +10,7 @@ var Word = (function(Word) {
 		this.remainingStr = word;
 		// the current letter that needs to be typed
 		this.activeLetter = word[0];
-		//
+		// denotes if this word is currently being typed
 		this.active = false;
 		// the size of the word in the dom
 		this.scale = Math.max(20, 2 * this.word.length);
@@ -20,8 +23,11 @@ var Word = (function(Word) {
 		} else {
 			this.x = rand;
 		}
+		// speed at which the word moves
+		this.speed = DEFAULT_Y_VEL;
 		// the array that this word lives in
 		this.container = arr;
+		// automatically push this word to the array when it is instantiated
 		arr.push(this);
 	}
 
@@ -54,6 +60,8 @@ var Word = (function(Word) {
 		});
 		// immediately remove it from the words array so the next word can be typed
 		arr.splice(arr.indexOf(this), 1);
+		// trigger game score event
+		Game.incrementScore(this.word.length);
 	}
 
 	Word.prototype.addToPage = function(classToAddTo) {
@@ -66,17 +74,16 @@ var Word = (function(Word) {
 		this.getFromDom().textillate({ in: { effect: 'bounceInDown'	}	});
 	}
 
-	Word.prototype.calculateVel = function() {
-		// returns the downwards velocity of the word
-		return (this.word.length - this.remainingStr.length) + 1;
-	}
-
-	Word.prototype.animate = function() {
+	Word.prototype.update = function() {
 		// increments internal position properties
-		this.y += 1;
+		this.speed = DEFAULT_Y_VEL + Game.currentLevel;
+		this.y += this.speed;
 		if (this.y > d.documentElement.clientHeight) {
 			this.y = 0;
 		}
+	}
+
+	Word.prototype.animate = function() {
 		// translates these to changes in the dom
 		var w = this.getFromDom();
 		w.css("top", this.y + "px");
