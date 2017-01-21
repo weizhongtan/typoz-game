@@ -1,1 +1,2 @@
-#Typoz game
+# Typoz game
+TYPE THE WORDS YOU SEE TO SCORE POINTS.
