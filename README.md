@@ -1,0 +1,2 @@
+# Typoz game
+Typing game
