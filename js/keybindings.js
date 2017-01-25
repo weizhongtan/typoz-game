@@ -46,4 +46,13 @@
       });
     })();
   }
+
+  Mousetrap.bind("esc", function() {
+    var s = Game.gameState;
+    if (s === STATE_PLAY) {
+      Game.gameState = STATE_PAUSED;
+    } else if (s === STATE_PAUSED) {
+      Game.gameState = STATE_PLAY;
+    }
+  });
 })();

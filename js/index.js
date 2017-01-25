@@ -11,21 +11,27 @@
 */
 var d = document;
 
+var STATE_PAUSED = 0, STATE_PLAY = 1;
+
 var Game = {
+	gameState: null,
 	currentLevel: null,
 	newWordIncrement: null,
 	wordsInGame: null,
-	playerScore: null,
-	playerLives: null,
+	player: {
+		score: null,
+		lives: null
+	},
 	T: null,
 	init: function() {
 		// clear the DOM
 		$(".game-word").empty();
+		this.gameState = STATE_PLAY;
 		this.currentLevel = 0;
 		this.wordsPerTenSecs = 3;
 		this.wordsInGame = [];
-		this.playerScore = 0;
-		this.playerLives = 10;
+		this.player.score = 0;
+		this.player.lives = 10;
 		this.T = 0;
 	},
 	main: function() {
@@ -35,20 +41,26 @@ var Game = {
 		this.renderFrame();
 	},
 	renderFrame: function () {
-		// increment time counter (1/30th of a second)
-		this.T++;
-		// generate new word from api request every 4 seconds
-		if (this.T % 300 * (1 / this.wordsPerTenSecs) == 0) {
-			this.getRandomWord();
+		if (this.gameState === STATE_PLAY) {
+			// hide pause screen
+			$(".pause-screen").css("visibility", "hidden");
+			// increment time counter (1/30th of a second)
+			this.T++;
+			// generate new word from api request every 4 seconds
+			if (this.T % 300 * (1 / this.wordsPerTenSecs) == 0) {
+				this.getRandomWord();
+			}
+			// animate each word in the words in the game currently
+			this.wordsInGame.forEach(function(w) {
+				w.update();
+				w.animate();
+			});
+			// render score
+			$("#player-score").text(Game.player.score);
+			$("#player-lives").text(Game.player.lives);
+		} else if (this.gameState === STATE_PAUSED) {
+			$(".pause-screen").css("visibility", "visible");
 		}
-		// animate each word in the words in the game currently
-		this.wordsInGame.forEach(function(w) {
-			w.update();
-			w.animate();
-		});
-		// render score
-		$("#player-score").text(Game.playerScore);
-		$("#player-lives").text(Game.playerLives);
 		// loop renderFrame function
 		setTimeout(function() {
 			Game.renderFrame();
@@ -73,18 +85,18 @@ var Game = {
 		this.addNewWord(data.Word.toLowerCase());
 	},
 	incrementScore: function(value) {
-		this.playerScore += value;
+		this.player.score += value;
 		this.updateLevel();
 	},
 	updateLevel: function() {
-		this.currentLevel = 1 - Math.pow(0.3, this.playerScore / 50);
+		this.currentLevel = 1 - Math.pow(0.3, this.player.score / 50);
 		this.wordsPerTenSecs = 3 + Math.floor(this.currentLevel * 7);
 		console.log("Current Level: ", this.currentLevel, " WPS: ", this.wordsPerTenSecs);
 	},
 	losePlayerLife: function() {
 		console.log("losing life");
-		this.playerLives--;
-		if (this.playerLives === 0) {
+		this.player.lives--;
+		if (this.player.lives === 0) {
 			this.init();
 		}
 	}
