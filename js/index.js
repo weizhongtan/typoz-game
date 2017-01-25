@@ -28,7 +28,7 @@ var Game = {
 		$(".game-word").empty();
 		this.gameState = STATE_PLAY;
 		this.currentLevel = 0;
-		this.wordsPerTenSecs = 3;
+		this.wordsPerTenSecs = 2;
 		this.wordsInGame = [];
 		this.player.score = 0;
 		this.player.lives = 10;
@@ -47,7 +47,8 @@ var Game = {
 			// increment time counter (1/30th of a second)
 			this.T++;
 			// generate new word from api request every 4 seconds
-			if (this.T % 300 * (1 / this.wordsPerTenSecs) == 0) {
+			if (this.T % Math.floor(300 * (1 / this.wordsPerTenSecs)) === 0) {
+				console.log("getting word");
 				this.getRandomWord();
 			}
 			// animate each word in the words in the game currently
@@ -90,7 +91,7 @@ var Game = {
 	},
 	updateLevel: function() {
 		this.currentLevel = 1 - Math.pow(0.3, this.player.score / 50);
-		this.wordsPerTenSecs = 3 + Math.floor(this.currentLevel * 7);
+		this.wordsPerTenSecs = 2 + Math.floor(this.currentLevel * 3);
 		console.log("Current Level: ", this.currentLevel, " WPS: ", this.wordsPerTenSecs);
 	},
 	losePlayerLife: function() {
@@ -99,8 +100,14 @@ var Game = {
 		if (this.player.lives === 0) {
 			this.init();
 		}
+	},
+	playSound: function() {
+		(new Audio("sounds/correct_sound.wav")).play();
 	}
 };
+
+// load sounds
+var Sounds = {};
 
 // start the game
 Game.main();

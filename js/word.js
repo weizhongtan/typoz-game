@@ -60,6 +60,8 @@ var Word = (function(Word) {
 		arr.splice(arr.indexOf(this), 1);
 		// trigger game score event
 		Game.incrementScore(this.word.length);
+		// play sound
+		Game.playSound();
 	}
 
 	Word.prototype.highlight = function() {
