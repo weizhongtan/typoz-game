@@ -16,9 +16,11 @@
         // check if there is an active word currently in the game
         Game.wordsInGame.forEach(function(w) {
           if (w.active) {
-            // set this word's active value to true, set activeWord to true
+            // decrement the word if the key was correct
             if (w.activeLetter == currKey) {
               w.changeActiveLetter();
+            } else {
+              w.highlight();
             }
             wordFound = true;
           }

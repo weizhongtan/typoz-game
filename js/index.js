@@ -13,13 +13,19 @@ var d = document;
 
 var Game = {
 	currentLevel: null,
+	newWordIncrement: null,
 	wordsInGame: null,
 	playerScore: null,
+	playerLives: null,
 	T: null,
 	init: function() {
+		// clear the DOM
+		$(".game-word").empty();
 		this.currentLevel = 0;
+		this.wordsPerTenSecs = 3;
 		this.wordsInGame = [];
 		this.playerScore = 0;
+		this.playerLives = 10;
 		this.T = 0;
 	},
 	main: function() {
@@ -31,8 +37,8 @@ var Game = {
 	renderFrame: function () {
 		// increment time counter (1/30th of a second)
 		this.T++;
-		// generate new word from api request every 2 seconds
-		if (this.T % 120 == 60) {
+		// generate new word from api request every 4 seconds
+		if (this.T % 300 * (1 / this.wordsPerTenSecs) == 0) {
 			this.getRandomWord();
 		}
 		// animate each word in the words in the game currently
@@ -42,6 +48,7 @@ var Game = {
 		});
 		// render score
 		$("#player-score").text(Game.playerScore);
+		$("#player-lives").text(Game.playerLives);
 		// loop renderFrame function
 		setTimeout(function() {
 			Game.renderFrame();
@@ -70,8 +77,16 @@ var Game = {
 		this.updateLevel();
 	},
 	updateLevel: function() {
-		this.currentLevel = 1 - Math.pow(0.5, this.playerScore / 40);
-		console.log("Current Level: ", this.currentLevel);
+		this.currentLevel = 1 - Math.pow(0.3, this.playerScore / 50);
+		this.wordsPerTenSecs = 3 + Math.floor(this.currentLevel * 7);
+		console.log("Current Level: ", this.currentLevel, " WPS: ", this.wordsPerTenSecs);
+	},
+	losePlayerLife: function() {
+		console.log("losing life");
+		this.playerLives--;
+		if (this.playerLives === 0) {
+			this.init();
+		}
 	}
 };
 

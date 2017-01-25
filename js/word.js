@@ -13,18 +13,14 @@ var Word = (function(Word) {
 		// denotes if this word is currently being typed
 		this.active = false;
 		// the size of the word in the dom
-		this.scale = Math.max(20, 2 * this.word.length);
+		this.scale = Math.max(30, Math.pow(3 * this.word.length, 0.5));
 		// vertical distance from the top
 		this.y = 0;
-		// randomized horizontal distance from the left
-		var rand = Math.random() * 100;
-		if (rand + (this.word.length * 2) > 100) {
-			this.x = rand - this.word.length;
-		} else {
-			this.x = rand;
-		}
+		// randomized horizontal distance from the left, taking into account word length
+		var rand = (Math.random() - 0.5) * (100 - this.word.length * 5);
+		this.x = 40 + rand;
 		// speed at which the word moves
-		this.speed = DEFAULT_Y_VEL;
+		this.speed = DEFAULT_Y_VEL + Game.currentLevel;
 		// the array that this word lives in
 		this.container = arr;
 		// automatically push this word to the array when it is instantiated
@@ -46,6 +42,8 @@ var Word = (function(Word) {
 			"<span class='typed'>" + this.typedStr + "</span>"
 			+ "<span>" + this.remainingStr + "</span>"
 		);
+		// reduce speed for each letter
+		this.speed *= 0.95;
 		if (this.remainingStr.length == 0) this.removeWordFrom(this.container);
 	}
 
@@ -64,6 +62,12 @@ var Word = (function(Word) {
 		Game.incrementScore(this.word.length);
 	}
 
+	Word.prototype.highlight = function() {
+		this.getFromDom().addClass('animated pulse highlighted').on('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+			$(this).removeClass('animated pulse highlighted');
+		});
+	}
+
 	Word.prototype.addToPage = function(classToAddTo) {
 		// creates a new div element, and adds it to given class dom element
 		var div = d.createElement("div");
@@ -76,7 +80,6 @@ var Word = (function(Word) {
 
 	Word.prototype.update = function() {
 		// increments internal position properties
-		this.speed = DEFAULT_Y_VEL + Game.currentLevel;
 		this.y += this.speed;
 		if (this.y > d.documentElement.clientHeight) {
 			this.y = 0;
