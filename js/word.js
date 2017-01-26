@@ -1,5 +1,5 @@
 "use strict";
-const DEFAULT_Y_VEL = 100;
+const DEFAULT_Y_VEL = 1;
 
 var Word = (function(Word) {
 	function Word(word, arr) {
@@ -44,7 +44,14 @@ var Word = (function(Word) {
 		);
 		// reduce speed for each letter
 		this.speed *= 0.95;
-		if (this.remainingStr.length == 0) this.removeWordFrom(this.container);
+		// check if word should be removed
+		if (this.remainingStr.length == 0) {
+			// trigger game score event
+			Game.incrementScore(this.word.length);
+			Game.playSound();
+			Game.player.updateStats(this.word);
+			this.removeWordFrom(this.container);
+		}
 	}
 
 	Word.prototype.removeWordFrom = function(arr) {
@@ -58,10 +65,6 @@ var Word = (function(Word) {
 		});
 		// immediately remove it from the words array so the next word can be typed
 		arr.splice(arr.indexOf(this), 1);
-		// trigger game score event
-		Game.incrementScore(this.word.length);
-		// play sound
-		Game.playSound();
 	}
 
 	Word.prototype.highlight = function() {

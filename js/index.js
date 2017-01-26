@@ -20,7 +20,25 @@ var Game = {
 	wordsInGame: null,
 	player: {
 		score: null,
-		lives: null
+		lives: null,
+		correctKeystrokes: null,
+		totalKeystrokes: null,
+		stats: {
+			longestWord: null,
+			typingAccuracy: null,
+			wordsTyped: null
+		},
+		// update all stats
+		updateStats: function(wordStr) {
+			var s = this.stats;
+			if (wordStr.length > s.longestWord.length) {
+				s.longestWord = wordStr;
+			}
+			if (this.totalKeystrokes !== 0) {
+				s.typingAccuracy = this.correctKeystrokes / this.totalKeystrokes;
+			}
+			s.wordsTyped++;
+		}
 	},
 	T: null,
 	init: function() {
@@ -32,6 +50,11 @@ var Game = {
 		this.wordsInGame = [];
 		this.player.score = 0;
 		this.player.lives = 5;
+		this.player.correctKeystrokes = 0;
+		this.player.totalKeystrokes = 0;
+		this.player.stats.longestWord = "";
+		this.player.stats.typingAccuracy = 0;
+		this.player.stats.wordsTyped = 0;
 		this.T = 0;
 	},
 	main: function() {
@@ -65,6 +88,13 @@ var Game = {
 				$(".pause-screen").css("visibility", "visible");
 				break;
 			case STATE_GAMEOVER:
+				var s = this.player.stats;
+				var view = {
+					longestWord: s.longestWord,
+					typingAccuracy: (s.typingAccuracy * 100).toFixed(1) + "%",
+					wordsTyped: s.wordsTyped + " " + ((s.wordsTyped === 1) ? "word" : "words")
+				};
+				$("ul").html(Mustache.render($("#stats-template").html(), view));
 				$(".gameover-screen").css("visibility", "visible");
 				break;
 		}

@@ -12,6 +12,8 @@
       var currKey = alphabet[i];
       // bind every keyboard event to this function
       Mousetrap.bind(currKey, function(e) {
+        // increment total keystroke count
+        Game.player.totalKeystrokes++;
         var wordFound = false;
         // check if there is an active word currently in the game
         Game.wordsInGame.forEach(function(w) {
@@ -19,6 +21,8 @@
             // decrement the word if the key was correct
             if (w.activeLetter == currKey) {
               w.changeActiveLetter();
+              // increment the players correct keystroke stats
+              Game.player.correctKeystrokes++;
             } else {
               w.highlight();
             }
@@ -40,7 +44,8 @@
             var activeWord = matchedWords.reduce((a, b) => (b.y > a.y) ? b : a);
             activeWord.active = true;
             activeWord.changeActiveLetter();
-            console.log("active word: " + activeWord.word);
+            // increment the players keystroke stats
+            Game.player.correctKeystrokes++;
           }
         }
       });
