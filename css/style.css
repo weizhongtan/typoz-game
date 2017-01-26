@@ -78,16 +78,17 @@ body {
 	height: 100%;
 	margin: 0;
 	opacity: 0.7;
-	z-index: 100;
 	color: #ffffff;
 }
 
 .pause-screen {
 	background-color: #180b33;
+	z-index: 100;
 }
 
 .gameover-screen {
 	background-color: #471b1b;
+	z-index: 300;
 }
 
 .pause-screen p, .gameover-screen p {
@@ -101,6 +102,7 @@ body {
 	text-align: center;
 }
 
-li {
+ul {
 	font-size: 2em;
+	list-style-type: none;
 }

@@ -10,11 +10,6 @@
 <body>
   <div class="game-container">
     <div class="gameover-screen">
-      <h1>game over!</h1>
-      <p>space to restart</p>
-      <p>statistics:</p>
-      <ul>
-      </ul>
     </div>
     <div class="pause-screen">
       <p>game paused</p>
@@ -33,10 +28,16 @@
       <p>pause: escape</p>
     </div>
   </div>
-  <template id="stats-template">
-    <li>longest word typed: {{longestWord}}</li>
-    <li>typing accuracy: {{typingAccuracy}}</li>
-    <li>total words typed: {{wordsTyped}}</li>
+  <template id="gameover-template">
+    <h1>game over!</h1>
+    <p>final score</p>
+    <h1>{{finalScore}}</h1>
+    <ul>
+      <li style="display: {{lwShow}}">longest word typed: {{longestWord}}</li>
+      <li>typing accuracy: {{typingAccuracy}}</li>
+      <li>total words typed: {{wordsTyped}}</li>
+    </ul>
+    <p>space to restart</p>
   </template>
   <script src='https://code.jquery.com/jquery-3.1.1.min.js'></script>
   <script src='https://craig.global.ssl.fastly.net/js/mousetrap/mousetrap.min.js?bc893'></script>

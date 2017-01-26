@@ -3,14 +3,13 @@
 /* TO DO LIST
 
 * add sound effects and music
-* fix bug of words going off the sides
 * make movement more dynamic
-* implement score system
 * online multiplayer / leaderboards
 
 */
 var d = document;
 
+// game states
 var STATE_PAUSED = 0, STATE_PLAY = 1, STATE_GAMEOVER = 2;
 
 var Game = {
@@ -28,16 +27,28 @@ var Game = {
 			typingAccuracy: null,
 			wordsTyped: null
 		},
-		// update all stats
+		// update all stats for gameover screen
 		updateStats: function(wordStr) {
 			var s = this.stats;
-			if (wordStr.length > s.longestWord.length) {
-				s.longestWord = wordStr;
+			// if this function is called with zero arguments, dont change words typed stats
+			if (wordStr) {
+				if (wordStr.length > s.longestWord.length) {
+					s.longestWord = wordStr;
+				}
+				s.wordsTyped++;
 			}
 			if (this.totalKeystrokes !== 0) {
 				s.typingAccuracy = this.correctKeystrokes / this.totalKeystrokes;
 			}
-			s.wordsTyped++;
+			// render stats list to gameover-screen
+			var view = {
+				finalScore: this.score,
+				longestWord: s.longestWord,
+				lwShow: (s.longestWord.length > 0) ? "initial" : "none",
+				typingAccuracy: (s.typingAccuracy * 100).toFixed(1) + "%",
+				wordsTyped: s.wordsTyped + " " + ((s.wordsTyped === 1) ? "word" : "words")
+			};
+			$(".gameover-screen").html(Mustache.render($("#gameover-template").html(), view));
 		}
 	},
 	T: null,
@@ -45,6 +56,7 @@ var Game = {
 		// clear the DOM
 		$(".game-word").empty();
 		this.gameState = STATE_PLAY;
+		// initial game difficulty levels
 		this.currentLevel = 0;
 		this.wordsPerTenSecs = 2;
 		this.wordsInGame = [];
@@ -52,6 +64,7 @@ var Game = {
 		this.player.lives = 5;
 		this.player.correctKeystrokes = 0;
 		this.player.totalKeystrokes = 0;
+		// initialize stats starting values
 		this.player.stats.longestWord = "";
 		this.player.stats.typingAccuracy = 0;
 		this.player.stats.wordsTyped = 0;
@@ -88,13 +101,6 @@ var Game = {
 				$(".pause-screen").css("visibility", "visible");
 				break;
 			case STATE_GAMEOVER:
-				var s = this.player.stats;
-				var view = {
-					longestWord: s.longestWord,
-					typingAccuracy: (s.typingAccuracy * 100).toFixed(1) + "%",
-					wordsTyped: s.wordsTyped + " " + ((s.wordsTyped === 1) ? "word" : "words")
-				};
-				$("ul").html(Mustache.render($("#stats-template").html(), view));
 				$(".gameover-screen").css("visibility", "visible");
 				break;
 		}
@@ -131,10 +137,10 @@ var Game = {
 		console.log("Current Level: ", this.currentLevel, " WPS: ", this.wordsPerTenSecs);
 	},
 	losePlayerLife: function() {
-		console.log("losing life");
 		this.player.lives--;
 		if (this.player.lives === 0) {
-			Game.gameState = STATE_GAMEOVER;
+			this.player.updateStats();
+			this.gameState = STATE_GAMEOVER;
 		}
 	},
 	playSound: function() {
