@@ -11,7 +11,7 @@
 */
 var d = document;
 
-var STATE_PAUSED = 0, STATE_PLAY = 1;
+var STATE_PAUSED = 0, STATE_PLAY = 1, STATE_GAMEOVER = 2;
 
 var Game = {
 	gameState: null,
@@ -31,7 +31,7 @@ var Game = {
 		this.wordsPerTenSecs = 2;
 		this.wordsInGame = [];
 		this.player.score = 0;
-		this.player.lives = 10;
+		this.player.lives = 5;
 		this.T = 0;
 	},
 	main: function() {
@@ -41,26 +41,32 @@ var Game = {
 		this.renderFrame();
 	},
 	renderFrame: function () {
-		if (this.gameState === STATE_PLAY) {
-			// hide pause screen
-			$(".pause-screen").css("visibility", "hidden");
-			// increment time counter (1/30th of a second)
-			this.T++;
-			// generate new word from api request every 4 seconds
-			if (this.T % Math.floor(300 * (1 / this.wordsPerTenSecs)) === 0) {
-				console.log("getting word");
-				this.getRandomWord();
-			}
-			// animate each word in the words in the game currently
-			this.wordsInGame.forEach(function(w) {
-				w.update();
-				w.animate();
-			});
-			// render score
-			$("#player-score").text(Game.player.score);
-			$("#player-lives").text(Game.player.lives);
-		} else if (this.gameState === STATE_PAUSED) {
-			$(".pause-screen").css("visibility", "visible");
+		switch (this.gameState) {
+			case STATE_PLAY:
+				// hide pause and gameover screen
+				$(".pause-screen, .gameover-screen").css("visibility", "hidden");
+				// increment time counter (1/30th of a second)
+				this.T++;
+				// generate new word from api request every 4 seconds
+				if (this.T % Math.floor(300 * (1 / this.wordsPerTenSecs)) === 0) {
+					console.log("getting word");
+					this.getRandomWord();
+				}
+				// animate each word in the words in the game currently
+				this.wordsInGame.forEach(function(w) {
+					w.update();
+					w.animate();
+				});
+				// render score
+				$("#player-score").text(Game.player.score);
+				$("#player-lives").text(Game.player.lives);
+				break;
+			case STATE_PAUSED:
+				$(".pause-screen").css("visibility", "visible");
+				break;
+			case STATE_GAMEOVER:
+				$(".gameover-screen").css("visibility", "visible");
+				break;
 		}
 		// loop renderFrame function
 		setTimeout(function() {
@@ -98,7 +104,7 @@ var Game = {
 		console.log("losing life");
 		this.player.lives--;
 		if (this.player.lives === 0) {
-			this.init();
+			Game.gameState = STATE_GAMEOVER;
 		}
 	},
 	playSound: function() {
@@ -112,6 +118,10 @@ var Sounds = {};
 // start the game
 Game.main();
 
+Game.addNewWord("hello", 1);
+// TESTING
+Game.addNewWord("hello", 1);
+Game.addNewWord("hello", 1);
 Game.addNewWord("hello", 1);
 
 setTimeout(function() {

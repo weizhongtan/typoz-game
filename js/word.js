@@ -1,5 +1,5 @@
 "use strict";
-const DEFAULT_Y_VEL = 1;
+const DEFAULT_Y_VEL = 100;
 
 var Word = (function(Word) {
 	function Word(word, arr) {
@@ -83,8 +83,10 @@ var Word = (function(Word) {
 	Word.prototype.update = function() {
 		// increments internal position properties
 		this.y += this.speed;
+		// decrement lives if the word reaches the bottom of the screen
 		if (this.y > d.documentElement.clientHeight) {
-			this.y = 0;
+			Game.losePlayerLife();
+			this.removeWordFrom(this.container);
 		}
 	}
 

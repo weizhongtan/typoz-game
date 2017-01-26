@@ -55,4 +55,10 @@
       Game.gameState = STATE_PLAY;
     }
   });
+
+  Mousetrap.bind("space", function() {
+    if (Game.gameState === STATE_GAMEOVER) {
+      Game.init();
+    }
+  })
 })();
