@@ -23,7 +23,10 @@
                 // increment the players correct keystroke stats
                 Game.player.correctKeystrokes++;
               } else {
+                // highlight the word to the player
                 w.highlight();
+                // reset the combo counter
+                Game.player.combo = 0;
               }
               wordFound = true;
             }

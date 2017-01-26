@@ -13,7 +13,7 @@ var Word = (function(Word) {
 		// denotes if this word is currently being typed
 		this.active = false;
 		// the size of the word in the dom
-		this.scale = Math.max(30, Math.pow(3 * this.word.length, 0.5));
+		this.scale = Math.max(30, Math.floor(200 / this.word.length));
 		// generate random color (hsl color from 0-360)
 		var randHue = Math.floor(Math.random() * 360);
 		this.color = 'hsl(' + randHue + ', 100%, 70%)';
@@ -44,10 +44,12 @@ var Word = (function(Word) {
 		this.activeLetter = this.remainingStr[0];
 		// change the dom element to mirror the changes
 		this.getFromDom().html(
-			"<span style='color:" + this.highlightColor + "'>" + this.typedStr + "</span>"
-			+ "<span>" + this.remainingStr + "</span>"
+			"<span style='color:" + this.highlightColor + "'>" + this.typedStr + "</span><span>" + this.remainingStr + "</span>"
 		);
 		this.speed *= 0.95;
+		// add combo
+		Game.player.incrementCombo(1);
+		this.addComboMsg();
 		// check if word should be removed
 		if (this.remainingStr.length == 0) {
 			// trigger game score event
@@ -81,6 +83,21 @@ var Word = (function(Word) {
 		this.getFromDom().addClass('animated pulse highlighted').on('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
 			$(this).removeClass('animated pulse highlighted');
 		});
+	}
+
+	Word.prototype.addComboMsg = function() {
+		var w = this.getFromDom();
+		var self = this;
+		// only add a combo message if the combo is x30, x60, x90 etc
+		if (Game.player.combo % 30 === 0) {
+			// create div to display combo, add animation and remove on animation end
+			var div = $("<div class='combo-counter'>x" + Game.player.comboMultiplier + "</div>");
+			div.css("top", (self.y - 20) + "px").css("left", self.x + self.typedStr.length + "%");
+			div.addClass("animated fadeInUp fadeOut").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+				div.remove();
+			});
+			$(".game-container").append(div);
+		}
 	}
 
 	Word.prototype.addToPage = function(classToAddTo) {

@@ -19,6 +19,8 @@ var Game = {
 	wordsInGame: null,
 	player: {
 		score: null,
+		combo: null,
+		comboMultiplier: null,
 		lives: null,
 		correctKeystrokes: null,
 		totalKeystrokes: null,
@@ -28,8 +30,13 @@ var Game = {
 			wordsTyped: null
 		},
 		incrementScore: function(value) {
-			this.score += value;
+			// apply combo to score and increment
+			this.score += value * this.comboMultiplier;
 			Game.updateLevel();
+		},
+		incrementCombo: function(value) {
+			this.combo += value;
+			this.comboMultiplier = 1 + Math.floor(this.combo / 30);
 		},
 		loseLife: function() {
 			this.lives--;
@@ -72,6 +79,8 @@ var Game = {
 		this.wordsPerTenSecs = 2;
 		this.wordsInGame = [];
 		this.player.score = 0;
+		this.combo = 0;
+		this.comboMultiplier = 1;
 		this.player.lives = 5;
 		this.player.correctKeystrokes = 0;
 		this.player.totalKeystrokes = 0;
@@ -156,9 +165,9 @@ Game.main();
 
 Game.addNewWord("hello", 1);
 // TESTING
-Game.addNewWord("hello", 1);
-Game.addNewWord("hello", 1);
-Game.addNewWord("hello", 1);
+// Game.addNewWord("hello", 1);
+// Game.addNewWord("hello", 1);
+// Game.addNewWord("hello", 1);
 
 setTimeout(function() {
 	Game.addNewWord("hear", 1)
