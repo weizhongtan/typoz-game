@@ -1,5 +1,5 @@
 "use strict";
-const DEFAULT_Y_VEL = 1;
+var DEFAULT_Y_VEL = 1;
 
 var Word = (function(Word) {
 	function Word(word, arr) {
@@ -14,11 +14,16 @@ var Word = (function(Word) {
 		this.active = false;
 		// the size of the word in the dom
 		this.scale = Math.max(30, Math.pow(3 * this.word.length, 0.5));
+		// generate random color (hsl color from 0-360)
+		var randHue = Math.floor(Math.random() * 360);
+		this.color = 'hsl(' + randHue + ', 100%, 70%)';
+		// generate opposite color for highlight color
+		this.highlightColor = 'hsl(' + (255 - randHue) + ', 30%, 80%)';
 		// vertical distance from the top
 		this.y = 0;
 		// randomized horizontal distance from the left, taking into account word length
-		var rand = (Math.random() - 0.5) * (100 - this.word.length * 5);
-		this.x = 40 + rand;
+		var _randX = (Math.random() - 0.5) * (100 - this.word.length * 5);
+		this.x = 40 + _randX;
 		// speed at which the word moves
 		this.speed = DEFAULT_Y_VEL + Game.currentLevel;
 		// the array that this word lives in
@@ -39,30 +44,35 @@ var Word = (function(Word) {
 		this.activeLetter = this.remainingStr[0];
 		// change the dom element to mirror the changes
 		this.getFromDom().html(
-			"<span class='typed'>" + this.typedStr + "</span>"
+			"<span style='color:" + this.highlightColor + "'>" + this.typedStr + "</span>"
 			+ "<span>" + this.remainingStr + "</span>"
 		);
-		// reduce speed for each letter
 		this.speed *= 0.95;
 		// check if word should be removed
 		if (this.remainingStr.length == 0) {
 			// trigger game score event
-			Game.incrementScore(this.word.length);
+			Game.player.incrementScore(this.word.length);
 			Game.playSound();
 			Game.player.updateStats(this.word);
-			this.removeWordFrom(this.container);
+			this.removeWordFrom(this.container, "zoomOutUp");
 		}
 	}
 
-	Word.prototype.removeWordFrom = function(arr) {
+	Word.prototype.removeWordFrom = function(arr, animation) {
 		// remove active so that a new word can be typed immediately
 		this.active = false;
-		// animated the word being removed, then remove from the dom
 		var w = this.getFromDom();
-		w.addClass('animated zoomOutUp');
-		w.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+		// check if animation arg was given
+		if (animation) {
+			$("#player-score").css("color", this.color);
+			$(".pause-screen").css("color", this.color);
+			w.addClass('animated ' + animation);
+			w.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+				w.remove();
+			});
+		} else {
 			w.remove();
-		});
+		}
 		// immediately remove it from the words array so the next word can be typed
 		arr.splice(arr.indexOf(this), 1);
 	}
@@ -80,15 +90,18 @@ var Word = (function(Word) {
 		div.setAttribute("class", "game-word");
 		div.appendChild(d.createTextNode(this.word));
 		$("." + classToAddTo).append(div);
-		this.getFromDom().textillate({ in: { effect: 'bounceInDown'	}	});
+		// add animation and coloring
+		var w = this.getFromDom()
+		w.textillate({ in: { effect: 'bounceInDown'	}	});
+		w.css("color", this.color);
 	}
 
 	Word.prototype.update = function() {
 		// increments internal position properties
 		this.y += this.speed;
 		// decrement lives if the word reaches the bottom of the screen
-		if (this.y > d.documentElement.clientHeight) {
-			Game.losePlayerLife();
+		if (this.y > $(".game-container").height()) {
+			Game.player.loseLife();
 			this.removeWordFrom(this.container);
 		}
 	}

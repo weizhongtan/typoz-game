@@ -27,6 +27,17 @@ var Game = {
 			typingAccuracy: null,
 			wordsTyped: null
 		},
+		incrementScore: function(value) {
+			this.score += value;
+			Game.updateLevel();
+		},
+		loseLife: function() {
+			this.lives--;
+			if (this.lives === 0) {
+				this.updateStats();
+				Game.gameState = STATE_GAMEOVER;
+			}
+		},
 		// update all stats for gameover screen
 		updateStats: function(wordStr) {
 			var s = this.stats;
@@ -127,21 +138,10 @@ var Game = {
 		// add the new word when data is received from the api call
 		this.addNewWord(data.Word.toLowerCase());
 	},
-	incrementScore: function(value) {
-		this.player.score += value;
-		this.updateLevel();
-	},
 	updateLevel: function() {
 		this.currentLevel = 1 - Math.pow(0.3, this.player.score / 50);
 		this.wordsPerTenSecs = 2 + Math.floor(this.currentLevel * 3);
 		console.log("Current Level: ", this.currentLevel, " WPS: ", this.wordsPerTenSecs);
-	},
-	losePlayerLife: function() {
-		this.player.lives--;
-		if (this.player.lives === 0) {
-			this.player.updateStats();
-			this.gameState = STATE_GAMEOVER;
-		}
 	},
 	playSound: function() {
 		(new Audio("sounds/correct_sound.wav")).play();
