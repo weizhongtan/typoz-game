@@ -1,6 +1,16 @@
 * { font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
 }
 
+html {
+	background-image: -webkit-gradient(linear,left top,left bottom,from(#1f1f1f),to(#000000));
+	margin: 0;
+	height: 100%;
+}
+
+body {
+	margin-top: 20px;
+}
+
 .game-container {
 	position: relative;
 	margin: auto;
@@ -9,7 +19,7 @@
 	height: 90vh;
 	border: 2px solid #000;
 	overflow: hidden;
-	background-image: -webkit-gradient(linear,left top,left bottom,from(#363636),to(#000000));
+	background-image: -webkit-gradient(linear,left top,left bottom,from(#000000),to(#363636));
 }
 
 .game-word {
