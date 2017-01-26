@@ -47,31 +47,37 @@ var Word = (function(Word) {
 			"<span style='color:" + this.highlightColor + "'>" + this.typedStr + "</span><span>" + this.remainingStr + "</span>"
 		);
 		this.speed *= 0.95;
-		// add combo
+		// add combo counter
 		Game.player.incrementCombo(1);
-		this.addComboMsg();
+		// only add a combo message if the combo is x30, x60, x90 etc
+		if (Game.player.combo % 30 === 0) {
+			addFloatingMsg("x " + Game.player.comboMultiplier, this.y - 20, this.x + this.typedStr.length, "fadeInUp", "fadeOut");
+		}
 		// check if word should be removed
-		if (this.remainingStr.length == 0) {
+		if (this.remainingStr.length === 0) {
 			// trigger game score event
 			Game.player.incrementScore(this.word.length);
 			Game.playSound();
 			Game.player.updateStats(this.word);
+			// if the word was particularly long, add bonus score and message
+			if (this.word.length > 12) {
+				Game.player.incrementScore(12);
+				addFloatingMsg("length bonus! +12", this.y, this.x, "fadeInUp", "fadeOut");
+			}
+			// remove word from the game
 			this.removeWordFrom(this.container, "zoomOutUp");
 		}
 	}
 
-	Word.prototype.removeWordFrom = function(arr, animation) {
+	Word.prototype.removeWordFrom = function(arr, optionalAnimationOut) {
 		// remove active so that a new word can be typed immediately
 		this.active = false;
 		var w = this.getFromDom();
-		// check if animation arg was given
-		if (animation) {
-			$("#player-score").css("color", this.color);
-			$(".pause-screen").css("color", this.color);
-			w.addClass('animated ' + animation);
-			w.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
-				w.remove();
-			});
+		$("#player-score").css("color", this.color);
+		$(".pause-screen").css("color", this.color);
+		// check if optionalAnimationOut arg was given
+		if (optionalAnimationOut) {
+			animateThenRm(w, "", optionalAnimationOut);
 		} else {
 			w.remove();
 		}
@@ -85,32 +91,13 @@ var Word = (function(Word) {
 		});
 	}
 
-	Word.prototype.addComboMsg = function() {
-		var w = this.getFromDom();
-		var self = this;
-		// only add a combo message if the combo is x30, x60, x90 etc
-		if (Game.player.combo % 30 === 0) {
-			// create div to display combo, add animation and remove on animation end
-			var div = $("<div class='combo-counter'>x" + Game.player.comboMultiplier + "</div>");
-			div.css("top", (self.y - 20) + "px").css("left", self.x + self.typedStr.length + "%");
-			div.addClass("animated fadeInUp fadeOut").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
-				div.remove();
-			});
-			$(".game-container").append(div);
-		}
-	}
-
 	Word.prototype.addToPage = function(classToAddTo) {
 		// creates a new div element, and adds it to given class dom element
-		var div = d.createElement("div");
-		div.setAttribute("id", this.word);
-		div.setAttribute("class", "game-word");
-		div.appendChild(d.createTextNode(this.word));
+		var div = $("<div id='" + this.word + "' class='game-word'>" + this.word + "</div>")
+		.css("color", this.color)
+		.textillate({ in: { effect: 'bounceInDown' } });
 		$("." + classToAddTo).append(div);
 		// add animation and coloring
-		var w = this.getFromDom()
-		w.textillate({ in: { effect: 'bounceInDown'	}	});
-		w.css("color", this.color);
 	}
 
 	Word.prototype.update = function() {
@@ -129,6 +116,30 @@ var Word = (function(Word) {
 		w.css("top", this.y + "px");
 		w.css("left", this.x + "%");
 		w.css("font-size", this.scale + "px");
+	}
+
+	function addFloatingMsg(msgString, posYpx, posXpercent, animationIn, animationOut) {
+		// create div with given message, position and animation, then add to game container
+		var div = $("<div class='floating-msg'>" + msgString + "</div>");
+		div.css("top", posYpx + "px").css("left", posXpercent + "%");
+		animateThenRm(div, animationIn, animationOut);
+		$(".game-container").append(div);
+	}
+
+	function animateThenRm(domElement, animationIn, animationOut) {
+		// adds specified classes to the dom element then removes them once animation is ended
+		if (animationIn) {
+			domElement.addClass("animated " + animationIn).on('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+				domElement.addClass(animationOut).on('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(e) {
+					domElement.remove();
+				});
+			});
+		} else {
+			domElement.addClass("animated " + animationOut).on('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(e) {
+				domElement.remove();
+			});
+		}
+
 	}
 
 	return Word;
