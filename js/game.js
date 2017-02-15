@@ -5,6 +5,8 @@
 * add sound effects and music
 * make movement more dynamic
 * online multiplayer / leaderboards
+* remove all Game references from word.js (so it's actually independent)
+* improve difficulty scaling
 
 */
 var d = document;
@@ -17,6 +19,8 @@ var Game = {
 	currentLevel: null,
 	newWordIncrement: null,
 	wordsInGame: null,
+	volume: null,
+	T: null,
 	player: {
 		score: null,
 		combo: null,
@@ -69,8 +73,7 @@ var Game = {
 			$(".gameover-screen").html(Mustache.render($("#gameover-template").html(), view));
 		}
 	},
-	T: null,
-	init: function() {
+	init: function(vol) {
 		// clear the DOM
 		$(".game-word").empty();
 		this.gameState = STATE_PLAY;
@@ -78,9 +81,11 @@ var Game = {
 		this.currentLevel = 0;
 		this.wordsPerTenSecs = 2;
 		this.wordsInGame = [];
+		this.volume = vol || 0.2;
+		this.T = 0;
 		this.player.score = 0;
-		this.combo = 0;
-		this.comboMultiplier = 1;
+		this.player.combo = 0;
+		this.player.comboMultiplier = 1;
 		this.player.lives = 5;
 		this.player.correctKeystrokes = 0;
 		this.player.totalKeystrokes = 0;
@@ -88,7 +93,6 @@ var Game = {
 		this.player.stats.longestWord = "";
 		this.player.stats.typingAccuracy = 0;
 		this.player.stats.wordsTyped = 0;
-		this.T = 0;
 	},
 	main: function() {
 		// initialize Game variables
@@ -97,6 +101,7 @@ var Game = {
 		this.renderFrame();
 	},
 	renderFrame: function () {
+		// determine which frame to render according to current game state
 		switch (this.gameState) {
 			case STATE_PLAY:
 				// hide pause and gameover screen
@@ -116,6 +121,8 @@ var Game = {
 				// render score
 				$("#player-score").text(Game.player.score);
 				$("#player-lives").text(Game.player.lives);
+				// render volume controls
+				$("#volume-level").text("Volume: " + (Game.volume * 100) + "%");
 				break;
 			case STATE_PAUSED:
 				$(".pause-screen").css("visibility", "visible");
@@ -153,12 +160,19 @@ var Game = {
 		console.log("Current Level: ", this.currentLevel, " WPS: ", this.wordsPerTenSecs);
 	},
 	playSound: function() {
-		(new Audio("sounds/correct_sound.wav")).play();
+		const sound = new Audio("sounds/correct_sound.wav")
+		sound.volume = this.volume;
+		sound.play();
+	},
+	adjustVolume: function(amount) {
+		this.volume = (this.volume < 1) ? Math.floor((this.volume + amount) * 10) / 10 : 0;
 	}
 };
 
-// load sounds
-var Sounds = {};
+// add click listener
+$("#volume-level").on("click", function() {
+	Game.adjustVolume(+0.2);
+});
 
 // start the game
 Game.main();
@@ -168,7 +182,7 @@ Game.addNewWord("hello", 1);
 // Game.addNewWord("hello", 1);
 // Game.addNewWord("hello", 1);
 // Game.addNewWord("hello", 1);
-
-setTimeout(function() {
-	Game.addNewWord("hear", 1)
-}, 500);
+//
+// setTimeout(function() {
+// 	Game.addNewWord("hear", 1)
+// }, 500);

@@ -2,6 +2,7 @@
 var DEFAULT_Y_VEL = 1;
 
 var Word = (function(Word) {
+	// constructor function
 	function Word(word, arr) {
 		this.word = word;
 		// the part of the word that has already been typed

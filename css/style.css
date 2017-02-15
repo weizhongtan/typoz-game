@@ -69,6 +69,10 @@ body {
 	line-height: 0em;
 }
 
+#volume-level {
+	cursor: pointer;
+}
+
 .floating-msg {
 	position: absolute;
 	color: #ffffff;
