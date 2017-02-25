@@ -1,0 +1,22 @@
+{
+  "name": "typoz-game",
+  "description": "Typing game",
+  "main": "index.js",
+  "authors": [
+    "wzt"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/weizhongtan/typoz-game",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  }
+}
