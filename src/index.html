@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>typoz</title>
+  <link rel="stylesheet" href="_bower.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <div class="game-container">
+    <div class="gameover-screen">
+    </div>
+    <div class="pause-screen">
+      <p>game paused</p>
+    </div>
+    <div class="info-container">
+      <p>score</p>
+      <p>
+        <span id="player-score">
+        </span>
+      </p>
+      <p>lives</p>
+      <p>
+        <span id="player-lives">
+        </span>
+      </p>
+      <p>pause: escape</p>
+      <p id="volume-level"><p>
+    </div>
+  </div>
+  <template id="gameover-template">
+    <h1>game over!</h1>
+    <p>final score</p>
+    <h1>{{finalScore}}</h1>
+    <ul>
+      <li style="display: {{lwShow}}">longest word typed: {{longestWord}}</li>
+      <li>typing accuracy: {{typingAccuracy}}</li>
+      <li>total words typed: {{wordsTyped}}</li>
+    </ul>
+    <p>space to restart</p>
+  </template>
+  <script src="_bower.js"></script>
+  <script src="js/word.js"></script>
+  <script src="js/keybindings.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

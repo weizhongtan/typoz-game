@@ -1,0 +1,29 @@
+{
+  "name": "typoz-game",
+  "version": "1.0.0",
+  "description": "Typing game",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-bower-concat": "^1.0.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weizhongtan/typoz-game.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/weizhongtan/typoz-game/issues"
+  },
+  "homepage": "https://github.com/weizhongtan/typoz-game#readme"
+}

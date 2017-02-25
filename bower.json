@@ -16,7 +16,15 @@
     "tests"
   ],
   "dependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^3.2.0"
+    "animate.css": "3.5.2",
+    "jquery": "3.1.1",
+    "mousetrap": "1.6.0",
+    "letteringjs": "0.7.0",
+    "textillate": "0.4.0",
+    "mustache.js": "mustache#2.3.0"
+  },
+  "devDependencies": {
+    "chai": "3.5.0",
+    "mocha": "3.2.0"
   }
 }
