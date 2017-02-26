@@ -27,7 +27,7 @@ var Word = (function(Word) {
 		var _randX = (Math.random() - 0.5) * (100 - this.word.length * 5);
 		this.x = 40 + _randX;
 		// speed at which the word moves
-		this.speed = this.gameObj.currentLevel ? DEFAULT_Y_VEL + this.gameObj.currentLevel : DEFAULT_Y_VEL;
+		this.speed = DEFAULT_Y_VEL + (this.gameObj.currentLevel ? this.gameObj.currentLevel : 0);
 		// the array that this word lives in
 		this.container = arr;
 		// automatically push this word to the array when it is instantiated

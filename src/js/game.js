@@ -10,7 +10,7 @@
 
 */
 
-var d = document;
+const d = document;
 
 // game states
 var STATE_PAUSED = 0, STATE_PLAY = 1, STATE_GAMEOVER = 2;
@@ -169,6 +169,8 @@ var Game = {
 		this.volume = (this.volume < 1) ? Math.floor((this.volume + amount) * 10) / 10 : 0;
 	}
 };
+
+bindKeys.to(Game);
 
 // add click listener
 $("#volume-level").on("click", function() {
