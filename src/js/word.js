@@ -3,7 +3,8 @@ var DEFAULT_Y_VEL = 1;
 
 var Word = (function(Word) {
 	// constructor function
-	function Word(word, arr) {
+	function Word(word, arr, gameObj) {
+		this.gameObj = gameObj || {};
 		this.word = word;
 		// the part of the word that has already been typed
 		this.typedStr = "";
@@ -26,7 +27,7 @@ var Word = (function(Word) {
 		var _randX = (Math.random() - 0.5) * (100 - this.word.length * 5);
 		this.x = 40 + _randX;
 		// speed at which the word moves
-		this.speed = DEFAULT_Y_VEL + Game.currentLevel;
+		this.speed = this.gameObj.currentLevel ? DEFAULT_Y_VEL + this.gameObj.currentLevel : DEFAULT_Y_VEL;
 		// the array that this word lives in
 		this.container = arr;
 		// automatically push this word to the array when it is instantiated
@@ -49,20 +50,20 @@ var Word = (function(Word) {
 		);
 		this.speed *= 0.95;
 		// add combo counter
-		Game.player.incrementCombo(1);
+		this.gameObj.player.incrementCombo(1);
 		// only add a combo message if the combo is x30, x60, x90 etc
-		if (Game.player.combo % 30 === 0) {
-			addFloatingMsg("x " + Game.player.comboMultiplier, this.y - 20, this.x + this.typedStr.length, "fadeInUp", "fadeOut");
+		if (this.gameObj.player.combo % 30 === 0) {
+			addFloatingMsg("x " + this.gameObj.player.comboMultiplier, this.y - 20, this.x + this.typedStr.length, "fadeInUp", "fadeOut");
 		}
 		// check if word should be removed
 		if (this.remainingStr.length === 0) {
 			// trigger game score event
-			Game.player.incrementScore(this.word.length);
-			Game.playSound();
-			Game.player.updateStats(this.word);
+			this.gameObj.player.incrementScore(this.word.length);
+			this.gameObj.playSound();
+			this.gameObj.player.updateStats(this.word);
 			// if the word was particularly long, add bonus score and message
 			if (this.word.length > 12) {
-				Game.player.incrementScore(12);
+				this.gameObj.player.incrementScore(12);
 				addFloatingMsg("length bonus! +12", this.y, this.x, "fadeInUp", "fadeOut");
 			}
 			// remove word from the game
@@ -106,7 +107,7 @@ var Word = (function(Word) {
 		this.y += this.speed;
 		// decrement lives if the word reaches the bottom of the screen
 		if (this.y > $(".game-container").height()) {
-			Game.player.loseLife();
+			this.gameObj.player.loseLife();
 			this.removeWordFrom(this.container);
 		}
 	}

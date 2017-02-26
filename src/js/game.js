@@ -9,6 +9,7 @@
 * improve difficulty scaling
 
 */
+
 var d = document;
 
 // game states
@@ -138,7 +139,7 @@ var Game = {
 	},
 	addNewWord: function(word) {
 		// create new word object, and add it to the dom
-		var newWord = new Word(word, this.wordsInGame);
+		var newWord = new Word(word, this.wordsInGame, Game);
 		newWord.addToPage("game-container");
 	},
 	getRandomWord: function() {
